@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Authorisation code — ExplainedByJ</title>
+<link rel="stylesheet" href="style.css">
+</head><body><main>
+<header>
+  <h1>Authorisation code</h1>
+  <p class="lede">TikTok redirected here after you approved the app. Copy the code
+  below and paste it into the terminal that is waiting for it.</p>
+</header>
+
+<div id="out"><p class="meta">Reading the URL…</p></div>
+
+<h2>Why a page instead of localhost</h2>
+<p>TikTok only redirects to an HTTPS URL on a verified domain, so the usual
+loopback-server trick used for the YouTube flow is not available. The code
+arrives as a query parameter; this page just makes it readable instead of
+leaving you to dig it out of the address bar.</p>
+<p class="meta">The code is short-lived and single-use. Nothing on this page is
+stored or sent anywhere — it is a static file, and the value never leaves your
+browser.</p>
+
+<footer><a href="index.html">ExplainedByJ</a></footer>
+
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var code = q.get("code");
+  var err = q.get("error") || q.get("error_description");
+  var out = document.getElementById("out");
+
+  function box(label, value) {
+    var w = document.createElement("div");
+    var h = document.createElement("h2"); h.textContent = label;
+    var p = document.createElement("p");
+    var t = document.createElement("textarea");
+    t.readOnly = true; t.rows = 3; t.value = value;
+    t.style.cssText = "width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem;padding:.6rem;border-radius:6px;border:1px solid var(--rule);background:var(--bg);color:var(--fg)";
+    t.addEventListener("focus", function () { t.select(); });
+    p.appendChild(t); w.appendChild(h); w.appendChild(p);
+    return w;
+  }
+
+  out.textContent = "";
+  if (err) {
+    out.appendChild(box("Authorisation failed", err));
+  } else if (code) {
+    out.appendChild(box("Code — click to select, then copy", code));
+  } else {
+    var p = document.createElement("p");
+    p.className = "meta";
+    p.textContent = "No code in the URL. Start the flow from the publishing script.";
+    out.appendChild(p);
+  }
+})();
+</script>
+</main></body></html>
